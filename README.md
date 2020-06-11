@@ -19,6 +19,8 @@ Feature :
 - [flutter_native_splash](https://pub.dev/packages/flutter_native_splash) version 0.1.9 for splashscreen
 - [flutter_launcher_icons](https://pub.dev/packages/flutter_launcher_icons) version 0.7.3 for custom app icon
 - [flutter_launcher_name](https://pub.dev/packages/flutter_launcher_name) version 0.0.1 for custom app name
+- [http](https://pub.dev/packages/http) version 0.12.1 for http method resource
+- [query_params](https://pub.dev/packages/query_params) version 0.6.1 for URL Parameters
 
 ## Run
 

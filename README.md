@@ -19,6 +19,7 @@ Feature :
 - [flutter_native_splash](https://pub.dev/packages/flutter_native_splash) version 0.1.9 for splashscreen
 - [flutter_launcher_icons](https://pub.dev/packages/flutter_launcher_icons) version 0.7.3 for custom app icon
 - [flutter_launcher_name](https://pub.dev/packages/flutter_launcher_name) version 0.0.1 for custom app name
+- [flutter_rating_bar](https://pub.dev/packages/flutter_rating_bar) version 3.0.1+1 for rating in product's card
 - [intl](https://pub.dev/packages/intl) version 0.16.1 for formatting number
 - [http](https://pub.dev/packages/http) version 0.12.1 for http method resource
 - [query_params](https://pub.dev/packages/query_params) version 0.6.1 for URL Parameters
@@ -31,7 +32,7 @@ Feature :
 
 ## Build for Deployment
 
-Based on [Reference] (https://flutter.dev/docs/deployment/android)
+Based on [Reference](https://flutter.dev/docs/deployment/android)
 
 After creating a keystore and configure it :
 

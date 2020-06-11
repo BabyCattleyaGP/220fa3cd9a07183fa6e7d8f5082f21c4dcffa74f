@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class ProductCard extends StatelessWidget{
   final String name;
@@ -59,6 +60,31 @@ class ProductCard extends StatelessWidget{
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Text(
+                      this.rating.toStringAsFixed(1),
+                      style: Theme.of(context).textTheme.bodyText2,
+                    ),
+
+                    RatingBar(
+                      initialRating: this.rating,
+                      ignoreGestures: true,
+                      minRating: 0,
+                      direction: Axis.horizontal,
+                      allowHalfRating: true,
+                      itemCount: 5,
+                      itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
+                      itemBuilder: (context, _) => Icon(
+                        Icons.star,
+                        color: Colors.amber
+                      ),
+                      itemSize: 20.0,
+                      onRatingUpdate: (rating) {},
+                    ),               
+                  ],
+                ),
+
                 Text(
                   this.name,
                   style: Theme.of(context).textTheme.bodyText1,

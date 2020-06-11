@@ -15,7 +15,10 @@ Feature :
 * Dart 2.8.4
 
 ## Included Packages
--
+
+- [flutter_native_splash](https://pub.dev/packages/flutter_native_splash) version 0.1.9 for splashscreen
+- [flutter_launcher_icons](https://pub.dev/packages/flutter_launcher_icons) version 0.7.3 for custom app icon
+- [flutter_launcher_name](https://pub.dev/packages/flutter_launcher_name) version 0.0.1 for custom app name
 
 ## Run
 

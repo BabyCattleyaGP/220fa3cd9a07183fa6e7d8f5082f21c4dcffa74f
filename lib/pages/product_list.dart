@@ -1,3 +1,4 @@
+import 'package:baby_220fa3cd9a07183fa6e7d8f5082f21c4dcffa74f/component/product_card.dart';
 import 'package:flutter/material.dart';
 import 'package:baby_220fa3cd9a07183fa6e7d8f5082f21c4dcffa74f/services/api_services.dart';
 import 'package:baby_220fa3cd9a07183fa6e7d8f5082f21c4dcffa74f/model/product.dart';
@@ -49,6 +50,11 @@ class ProductListPageState extends State<ProductListPage> {
   }
 
   Widget _buildList(List<ProductModel> products) {
+    var size = MediaQuery.of(context).size;
+
+    final double itemHeight = (size.height - kToolbarHeight) / 2;
+    final double itemWidth = size.width / 2;
+    
     return Scaffold(
         appBar: AppBar(
           iconTheme: IconThemeData(
@@ -90,34 +96,24 @@ class ProductListPageState extends State<ProductListPage> {
         ) 
         :
         Container(
-          child: Column(
-            children: <Widget>[
-              Text(
-                products[0].name
-              )
-            ],
+          child: 
+            GridView.count(
+            crossAxisCount: 2,
+            childAspectRatio: (itemWidth / itemHeight),
+            children: List.generate(products.length, (index) {
+              ProductModel product = products[index];
+              return 
+                ProductCard(
+                  name:product.name,
+                  price: product.price,
+                  imageUrl: product.imageUrl,
+                  brandName: product.brandName,
+                  packageName: product.packageName,
+                  rating: product.rating
+                );                
+            }),
           ),
         ),
-        // : Container(
-        //   child: ListView.builder(
-        //     itemCount: products.length,
-        //     itemBuilder: (context, index) {
-        //       ProductModel product = products[index];
-        //       return 
-        //         GestureDetector(
-        //           child: 
-        //             ProductCard(
-        //               name:product.name,
-        //               price: product.price,
-        //               imageUrl: product.imageUrl,
-        //               brandName: product.brandName,
-        //               packageName: product.packageName,
-        //               rating: product.rating
-        //             ),
-        //         );
-        //     },
-        //   ),
-        // ),
     );
   }
 

@@ -22,6 +22,8 @@ class MyApp extends StatelessWidget {
         accentColor: Color(0xFFfc443c),
         fontFamily: 'Nunito',
         textTheme: TextTheme(
+          bodyText1: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
+          bodyText2: TextStyle(fontSize: 12.0, color: Colors.grey),
           button: TextStyle(fontSize: 20.0, color: Colors.white),
         ),
       ),      

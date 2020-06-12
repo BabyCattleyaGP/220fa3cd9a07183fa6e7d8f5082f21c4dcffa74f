@@ -9,6 +9,7 @@ class ProductCard extends StatelessWidget{
   final String brandName;
   final String packageName;
   final double rating;
+  final int quantity;
 
   ProductCard ({
     this.name,
@@ -16,7 +17,8 @@ class ProductCard extends StatelessWidget{
     this.imageUrl,
     this.brandName,
     this.packageName,
-    this.rating
+    this.rating,
+    this.quantity
   });
 
   final NumberFormat currency = 

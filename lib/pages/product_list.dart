@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class ProductListPage extends StatefulWidget {
   @override
@@ -16,6 +17,11 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
   AnimationController _animationController;
   CalendarController _calendarController;
   ApiService apiService;
+  List quantityOfProductInCart = [];
+
+  int totalPrice = 0;
+  int totalItem = 0;
+  int temptotalPrice = 0;
 
   @override
   void initState() {
@@ -55,6 +61,18 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
   void _onCalendarCreated(DateTime first, DateTime last, CalendarFormat format) {
     // print('CALLBACK: _onCalendarCreated');
   }
+
+  // void _incrementCounter() {
+  //   setState(() {
+  //     _counter++;
+  //   });
+  // }
+
+  // void _decrementCounter() {
+  //   setState(() {
+  //     _counter--;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -256,6 +274,19 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
 
     final double itemHeight = (size.height - kToolbarHeight) / 2;
     final double itemWidth = size.width / 2;
+
+    final Size screenSize = MediaQuery.of(context).size;
+    final cardWidth = 0.5 * (screenSize.width);
+    final cardHeight =  0.5 * (screenSize.height  - kToolbarHeight);
+    final imageWidth = cardWidth;
+    final imageHeight = 0.35 * cardHeight;
+
+    final NumberFormat currency = 
+  NumberFormat.currency(name: 'Rp', customPattern: '\u00a4 #,###', decimalDigits: 0);
+
+    for (var i=0; i<products.length; i++){
+      quantityOfProductInCart.add(0);
+    }
     
     return Scaffold(
         body: products.isEmpty ? 
@@ -299,19 +330,293 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
                 children: List.generate(products.length, (index) {
                   ProductModel product = products[index];
                   return 
-                    ProductCard(
-                      name:product.name,
-                      price: product.price,
-                      imageUrl: product.imageUrl,
-                      brandName: product.brandName,
-                      packageName: product.packageName,
-                      rating: product.rating
-                    );                
+                    // ProductCard(
+                    //   name:product.name,
+                    //   price: product.price,
+                    //   imageUrl: product.imageUrl,
+                    //   brandName: product.brandName,
+                    //   packageName: product.packageName,
+                    //   rating: product.rating
+                    // );
+                  Container(
+                    padding: EdgeInsets.all(2.0),
+                    margin: const EdgeInsets.all(2.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.only(bottom: 3.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(80.0),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Image.network(
+                              '${product.imageUrl.toString()}',
+                              fit: BoxFit.cover,
+                              width: imageWidth,
+                              height: imageHeight,
+                            ),
+                          ),
+                        ),
+
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 5.0),
+                          height: 0.3 * cardHeight,
+                          width: imageWidth,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Text(
+                                    product.rating.toStringAsFixed(1),
+                                    style: Theme.of(context).textTheme.bodyText2,
+                                  ),
+
+                                  RatingBar(
+                                    initialRating: product.rating,
+                                    ignoreGestures: true,
+                                    minRating: 0,
+                                    direction: Axis.horizontal,
+                                    allowHalfRating: true,
+                                    itemCount: 5,
+                                    itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
+                                    itemBuilder: (context, _) => Icon(
+                                      Icons.star,
+                                      color: Colors.amber
+                                    ),
+                                    itemSize: 20.0,
+                                    onRatingUpdate: (rating) {},
+                                  ),               
+                                ],
+                              ),
+
+                              Text(
+                                product.name,
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+
+                              Flexible(
+                                child: Container(
+                                  child: Text(
+                                    'by ${product.brandName}',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context).textTheme.bodyText2,
+                                  )
+                                ),
+                              ),
+
+                              Container(
+                                child:Text(
+                                  product.packageName
+                                )
+                              ), 
+
+                            ],
+                          )
+                        ),
+
+                        Container(
+                          height: 0.27 * cardHeight,
+                          width: imageWidth,
+                          padding: EdgeInsets.all(0.0),
+                          margin:  EdgeInsets.all(0.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                currency.format(product.price).toString(),
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+
+                              Container(
+                                width: imageWidth,
+                                child: quantityOfProductInCart[index] == 0 ?
+                                  RaisedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        quantityOfProductInCart[index]++;
+                                        totalItem = quantityOfProductInCart.reduce((curr, element) => curr + element);
+                                      });
+                                      temptotalPrice = 0;
+                                      for (var i = 0; i < products.length; i++) {
+                                       temptotalPrice = temptotalPrice + (products[i].price * quantityOfProductInCart[i]);
+                                      }
+                                      setState(() {
+                                        totalPrice = temptotalPrice;
+                                      });
+                                    },
+                                    color: Color(0xFFFFFFFF),
+                                    padding: EdgeInsets.all(2.0),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: new BorderRadius.circular(8.0),
+                                      side: BorderSide(color: Theme.of(context).accentColor)
+                                    ),
+                                    child: 
+                                      Text('Tambah ke keranjang',
+                                        style: 
+                                          TextStyle(
+                                            fontSize: 12.0,
+                                            color: Theme.of(context).accentColor,
+                                          )
+                                      ),
+                                    )
+                                  : 
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: <Widget>[
+                                      Container(
+                                        width: 0.3 * cardWidth,
+                                        margin: EdgeInsets.only(right: 2.0),
+                                        child: 
+                                        RaisedButton(
+                                          color: Colors.white,
+                                          padding: EdgeInsets.all(2.0),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: new BorderRadius.circular(8.0),
+                                            side: BorderSide(color: Colors.grey[100])
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              quantityOfProductInCart[index]--;
+                                              totalItem = quantityOfProductInCart.reduce((curr, element) => curr + element);
+                                            });
+                                            for (var i = 0; i < products.length; i++) {
+                                              temptotalPrice = temptotalPrice + (products[i].price * quantityOfProductInCart[i]);
+                                            }
+                                            setState(() {
+                                              totalPrice = temptotalPrice;
+                                            });
+                                          },
+                                          child: 
+                                          Text(
+                                            '-',
+                                            style: 
+                                            TextStyle(
+                                              color: Theme.of(context).accentColor,
+                                              fontSize: 16.0
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      
+                                      Container(
+                                        width: 0.3 * cardWidth,
+                                        margin: EdgeInsets.only(right: 2.0),
+                                        child: 
+                                        RaisedButton(
+                                        color: Colors.white,
+                                          padding: EdgeInsets.all(2.0),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: new BorderRadius.circular(8.0),
+                                            side: BorderSide(color: Colors.grey[100])
+                                          ),
+                                          onPressed: () {},
+                                          child: Text(
+                                            '${quantityOfProductInCart[index]}',
+                                            style: Theme.of(context).textTheme.bodyText1,
+                                          ),
+                                        ),
+                                      ),
+
+                                      
+                                      Container(
+                                        width: 0.3 * cardWidth,
+                                        child: 
+                                        RaisedButton(
+                                          color: Colors.white,
+                                          padding: EdgeInsets.all(2.0),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: new BorderRadius.circular(8.0),
+                                            side: BorderSide(color: Colors.grey[100])
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              quantityOfProductInCart[index]++;
+                                              totalItem = quantityOfProductInCart.reduce((curr, element) => curr + element);
+                                            });
+                                            for (var i = 0; i < products.length; i++) {
+                                              temptotalPrice = temptotalPrice + (products[i].price * quantityOfProductInCart[i]);
+                                            }
+                                            setState(() {
+                                              totalPrice = temptotalPrice;
+                                            });
+                                          },
+                                          child: Text(
+                                            '+',
+                                            style: TextStyle(
+                                              color: Theme.of(context).accentColor,
+                                              fontSize: 16.0
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                    ],
+                                  )
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+
                 }),
               ),
             ),
           ],
         ),
+
+        bottomNavigationBar: 
+          Visibility(
+            child: 
+            Padding(
+              padding: EdgeInsets.all(2.0),
+              child: RaisedButton(
+                onPressed: () {},
+                color: Theme.of(context).accentColor,
+                textColor: Colors.white,
+                child: 
+                  Container( 
+                    height: 60.0,
+                    child:
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              '$totalItem Item | ${currency.format(totalPrice).toString()}',
+                              style: TextStyle(
+                                fontSize: 12.0
+                              ),
+                            ),
+                            Text(
+                              'Termasuk ongkos kirim',
+                              style: TextStyle(
+                                fontSize: 12.0
+                              ),
+                            ),
+                          ],
+                        ),
+                        FaIcon(
+                          FontAwesomeIcons.shoppingCart,
+                          color: Colors.white
+                        )
+                      ],
+                    ),
+                  ),
+              ),
+            ),
+            visible: quantityOfProductInCart.reduce((curr, element) => curr + element) > 0,
+            maintainSize: false, 
+            maintainAnimation: false,
+            maintainState: false,
+          ),
     );
   }
 }

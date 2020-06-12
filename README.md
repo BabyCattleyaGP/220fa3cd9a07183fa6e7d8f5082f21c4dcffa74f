@@ -54,12 +54,12 @@ Product List Screen
 - [ ] Product List
   - [ ] The list must be lazy loaded 
     - [X] Displayed but not lazy loaded 
-  - [ ] Add product to cart by clicking “Tambah ke keranjang”
-  - [ ] Quantity can be edited after product added to cart
-  - [ ] Changing quantity to 0 removes product from cart
-  - [ ] Cart button displayed if there is an item in cart
+  - [X] Add product to cart by clicking “Tambah ke keranjang”
+  - [X] Quantity can be edited after product added to cart
+  - [X] Changing quantity to 0 removes product from cart
+  - [X] Cart button displayed if there is an item in cart
 - [ ] Cart Button
-  - [ ] Total item & price displayed changes according to cart content
+  - [X] Total item & price displayed changes according to cart content
   - [ ] Clicking the button will navigate to Cart Screen
 
 Cart Screen

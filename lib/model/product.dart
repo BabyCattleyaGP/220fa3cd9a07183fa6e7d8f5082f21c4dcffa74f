@@ -8,6 +8,7 @@ class ProductModel {
   String packageName;
   int price;
   double rating;
+  int quantity;
 
   ProductModel({
     this.id,
@@ -16,7 +17,8 @@ class ProductModel {
     this.brandName,
     this.packageName,
     this.price,
-    this.rating
+    this.rating,
+    this.quantity
   });
 
 factory ProductModel.fromJson(Map<String, dynamic> map) {
@@ -27,7 +29,7 @@ factory ProductModel.fromJson(Map<String, dynamic> map) {
       brandName: map["brand_name"],
       packageName: map["package_name"],
       price: map["price"],
-      rating: map["rating"]
+      rating: map["rating"],
     );
   }
 

@@ -22,7 +22,7 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
   int totalPrice = 0;
   int totalItem = 0;
   int temptotalPrice = 0;
-
+    
   @override
   void initState() {
     super.initState();
@@ -287,9 +287,12 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
     for (var i=0; i<products.length; i++){
       quantityOfProductInCart.add(0);
     }
-    
+
     return Scaffold(
-        body: products.isEmpty ? 
+        body: (products.isEmpty 
+                || 
+              ((_selected.weekday == DateTime.sunday) || (_selected.weekday == DateTime.saturday))
+            ) ? 
         Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -304,7 +307,7 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
               Padding(
                 padding: EdgeInsets.only(top:5.0, bottom:15.0),
                 child: Text(
-                  'We don`t have any product right now!'
+                  'We don`t have any product for today!'
                 ),
               ),
               
@@ -349,13 +352,19 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(80.0),
                           ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8.0),
-                            child: Image.network(
-                              '${product.imageUrl.toString()}',
-                              fit: BoxFit.cover,
-                              width: imageWidth,
-                              height: imageHeight,
+                          child: 
+                          Container(
+                            width: imageWidth,
+                            height: imageHeight,
+                            decoration: new BoxDecoration(
+                              borderRadius: new BorderRadius.circular(6.0),
+                              color: Theme.of(context).accentColor,
+                              image: new DecorationImage(
+                                image: new NetworkImage(
+                                    '${product.imageUrl.toString()}'
+                                  ),
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         ),

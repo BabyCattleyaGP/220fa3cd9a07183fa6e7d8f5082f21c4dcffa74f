@@ -1,9 +1,10 @@
 import 'package:baby_220fa3cd9a07183fa6e7d8f5082f21c4dcffa74f/pages/product_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' ;
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
-  runApp(MyApp());
+  initializeDateFormatting().then((_) => runApp(MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         primaryColor: Color(0xFFfc443c),
         accentColor: Color(0xFFfc443c),
-        fontFamily: 'Nunito',
+        fontFamily: 'ProximaNova',
         textTheme: TextTheme(
           bodyText1: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
           bodyText2: TextStyle(fontSize: 12.0, color: Colors.grey),

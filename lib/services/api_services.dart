@@ -6,23 +6,23 @@ class ApiService {
   final String baseUrl = "https://kulina-recruitment.herokuapp.com";
   Client client = Client();
 
+  // Future<List<ProductModel>> getAllProducts() async {
+  //    Map<String, String> requestHeaders = {
+  //      'Accept': 'application/json',
+  //    };
+
+  //   final response = await client.get(
+  //     "$baseUrl/products/", 
+  //     headers:requestHeaders
+  //   );
+  //   if (response.statusCode == 200) {
+  //     return productFromJson(response.body);
+  //   } else {
+  //     return null;
+  //   }
+  // }
+
   Future<List<ProductModel>> getAllProducts() async {
-     Map<String, String> requestHeaders = {
-       'Accept': 'application/json',
-     };
-
-    final response = await client.get(
-      "$baseUrl/products/", 
-      headers:requestHeaders
-    );
-    if (response.statusCode == 200) {
-      return productFromJson(response.body);
-    } else {
-      return null;
-    }
-  }
-
-  Future<List<ProductModel>> getProductWithQueryParam() async {
      Map<String, String> requestHeaders = {
        'Accept': 'application/json',
      };

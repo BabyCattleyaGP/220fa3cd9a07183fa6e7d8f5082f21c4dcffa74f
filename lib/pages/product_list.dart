@@ -1,11 +1,14 @@
-import 'package:baby_220fa3cd9a07183fa6e7d8f5082f21c4dcffa74f/component/product_card.dart';
+// import 'package:baby_220fa3cd9a07183fa6e7d8f5082f21c4dcffa74f/component/product_card.dart';
+import 'package:baby_220fa3cd9a07183fa6e7d8f5082f21c4dcffa74f/pages/cart_item_list.dart';
 import 'package:baby_220fa3cd9a07183fa6e7d8f5082f21c4dcffa74f/services/api_services.dart';
+import 'package:baby_220fa3cd9a07183fa6e7d8f5082f21c4dcffa74f/model/cart.dart';
 import 'package:baby_220fa3cd9a07183fa6e7d8f5082f21c4dcffa74f/model/product.dart';
+import 'package:baby_220fa3cd9a07183fa6e7d8f5082f21c4dcffa74f/services/shared_preferences_services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class ProductListPage extends StatefulWidget {
   @override
@@ -17,15 +20,38 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
   AnimationController _animationController;
   CalendarController _calendarController;
   ApiService apiService;
+  SharedPreferencesServices sharedPref = SharedPreferencesServices();  
   List quantityOfProductInCart = [];
+  List<ProductModel> productInCart = [];
 
   int totalPrice = 0;
   int totalItem = 0;
   int temptotalPrice = 0;
+
+  void loadSharedPrefs() async {
+    String data = await sharedPref.read("cart");
+    if(data != null){
+      CartModel cart = cartFromJson(await sharedPref.read("cart"));
+      List<ProductModel> temp = [];
+      if(cart.totalItem != 0){
+        cart.products.forEach(
+          (element) => {
+              temp.add(element),
+            }
+        );
+        setState(() {
+          totalItem = cart.totalItem;
+          totalPrice = cart.totalPrice;
+          productInCart = temp;
+        });
+      }
+    }
+  }
     
   @override
   void initState() {
     super.initState();
+    loadSharedPrefs();
     _calendarController = CalendarController();
 
     _animationController = AnimationController(
@@ -45,7 +71,11 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
     super.dispose();
   }
 
-  DateTime _selected = DateTime.now();
+  DateTime _selected = 
+    DateTime.now().weekday == 6 ? 
+      DateTime.now().add(new Duration(days: 2)) : 
+            DateTime.now().weekday == 7 ? DateTime.now().add(new Duration(days: 1)) : DateTime.now();
+            
 
   void _onDaySelected(DateTime day, List products) {
     setState(() {
@@ -61,18 +91,6 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
   void _onCalendarCreated(DateTime first, DateTime last, CalendarFormat format) {
     // print('CALLBACK: _onCalendarCreated');
   }
-
-  // void _incrementCounter() {
-  //   setState(() {
-  //     _counter++;
-  //   });
-  // }
-
-  // void _decrementCounter() {
-  //   setState(() {
-  //     _counter--;
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -125,13 +143,16 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
     return TableCalendar(
       headerVisible: false,
       calendarController: _calendarController,
-      startDay: DateTime.now(),
+      startDay: 
+        DateTime.now().weekday == 6 ? 
+          DateTime.now().add(new Duration(days: 2)) : 
+            DateTime.now().weekday == 7 ? DateTime.now().add(new Duration(days: 1)) : DateTime.now(),
       endDay: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + 56),
       enabledDayPredicate: (date) {
         return (date.weekday != DateTime.sunday) && (date.weekday != DateTime.saturday);
       },
       initialCalendarFormat: CalendarFormat.week,
-      initialSelectedDay: DateTime.now(),
+      initialSelectedDay: _selected,
       formatAnimation: FormatAnimation.slide,
       startingDayOfWeek: StartingDayOfWeek.monday,
       availableGestures: AvailableGestures.all,
@@ -284,9 +305,51 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
     final NumberFormat currency = 
   NumberFormat.currency(name: 'Rp', customPattern: '\u00a4 #,###', decimalDigits: 0);
 
-    for (var i=0; i<products.length; i++){
-      quantityOfProductInCart.add(0);
+    quantityOfProductInCart.clear();
+    if(totalItem == 0){
+      for(var k=0; k<products.length; k++){
+        quantityOfProductInCart.add(0);
+      }
+    } 
+    else if (totalItem == 1){
+      var index = 0;
+      for(var h=0; h < products.length; h++){
+        if(products[h].id == productInCart[0].id){
+          quantityOfProductInCart.add(productInCart[0].quantity);
+          break;
+        }
+        else {
+          quantityOfProductInCart.add(0);
+        }
+        index++;
+      }
+
+      for(var h=index+1; h < products.length; h++){
+        quantityOfProductInCart.add(0);
+      }
     }
+    else {
+      var j = 0;
+      var index = 0;
+      for(var i = 0; i < products.length; i++){        
+        if(products[i].id == productInCart[j].id){
+          quantityOfProductInCart.add(productInCart[j].quantity);
+          j++;
+          if(j == productInCart.length){
+            break;
+          }
+        }
+        else {
+          quantityOfProductInCart.add(0);
+        }
+        index++;
+      }
+      for(var h=index+1; h < products.length; h++){
+        quantityOfProductInCart.add(0);
+      }
+    }
+
+    print(quantityOfProductInCart);
 
     return Scaffold(
         body: (products.isEmpty 
@@ -455,6 +518,27 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
                                       setState(() {
                                         totalPrice = temptotalPrice;
                                       });
+
+                                      DateTime selectedDay = _selected;
+
+                                      ProductModel selectedProduct = ProductModel(
+                                        id: product.id, 
+                                        name: product.name,
+                                        price: product.price,
+                                        rating: product.rating,
+                                        packageName: product.packageName,
+                                        brandName: product.brandName,
+                                        imageUrl: product.imageUrl,
+                                        orderDate: selectedDay,
+                                        quantity: quantityOfProductInCart[index]
+                                      );
+
+                                      productInCart.add(selectedProduct);
+                                      productInCart.sort((a, b) => a.id.compareTo(b.id));
+
+                                      CartModel userCart = CartModel(totalPrice: totalPrice, totalItem: totalItem, products: productInCart);
+                                      sharedPref.save("cart", cartToJson(userCart));    
+                                      //sharedPref.remove("cart");
                                     },
                                     color: Color(0xFFFFFFFF),
                                     padding: EdgeInsets.all(2.0),
@@ -491,12 +575,35 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
                                               quantityOfProductInCart[index]--;
                                               totalItem = quantityOfProductInCart.reduce((curr, element) => curr + element);
                                             });
+                                            temptotalPrice = 0;
                                             for (var i = 0; i < products.length; i++) {
                                               temptotalPrice = temptotalPrice + (products[i].price * quantityOfProductInCart[i]);
                                             }
                                             setState(() {
                                               totalPrice = temptotalPrice;
                                             });
+
+                                            var toRemove = [];
+                                            
+                                            productInCart.forEach(
+                                              (element) => {
+                                                if(element.id == product.id){
+                                                  element.quantity--,
+                                                  if(element.quantity == 0){
+                                                    toRemove.add(element),
+                                                  }
+                                                }
+                                              }
+                                            );
+
+                                            productInCart.removeWhere((item) => toRemove.contains(item));
+                                            if(productInCart != []){
+                                              productInCart.sort((a, b) => a.id.compareTo(b.id));
+                                              CartModel userCart = CartModel(totalPrice: totalPrice, totalItem: totalItem, products: productInCart);
+                                              sharedPref.save("cart", cartToJson(userCart)); 
+                                            }
+                                              sharedPref.remove("cart");
+                                            
                                           },
                                           child: 
                                           Text(
@@ -545,12 +652,27 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
                                               quantityOfProductInCart[index]++;
                                               totalItem = quantityOfProductInCart.reduce((curr, element) => curr + element);
                                             });
+                                            temptotalPrice = 0;
                                             for (var i = 0; i < products.length; i++) {
                                               temptotalPrice = temptotalPrice + (products[i].price * quantityOfProductInCart[i]);
                                             }
                                             setState(() {
                                               totalPrice = temptotalPrice;
                                             });
+
+                                            productInCart.forEach(
+                                              (element) => {
+                                                if(element.id == product.id){
+                                                  element.quantity++,
+                                                }
+                                              }
+                                            );
+
+                                            productInCart.sort((a, b) => a.id.compareTo(b.id));
+
+                                            CartModel userCart = CartModel(totalPrice: totalPrice, totalItem: totalItem, products: productInCart);
+                                            sharedPref.save("cart", cartToJson(userCart)); 
+
                                           },
                                           child: Text(
                                             '+',
@@ -584,7 +706,12 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
             Padding(
               padding: EdgeInsets.all(2.0),
               child: RaisedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CartListPage()),
+                );
+                },
                 color: Theme.of(context).accentColor,
                 textColor: Colors.white,
                 child: 
@@ -621,7 +748,7 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
                   ),
               ),
             ),
-            visible: quantityOfProductInCart.reduce((curr, element) => curr + element) > 0,
+            visible: totalItem > 0,
             maintainSize: false, 
             maintainAnimation: false,
             maintainState: false,

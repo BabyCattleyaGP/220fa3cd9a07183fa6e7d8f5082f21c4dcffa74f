@@ -21,9 +21,11 @@ Flutter project for preliminary test.
 - [flutter_launcher_name](https://pub.dev/packages/flutter_launcher_name) version 0.0.1 for custom app name
 - [flutter_rating_bar](https://pub.dev/packages/flutter_rating_bar) version 3.0.1+1 for rating in product's card
 - [font_awesome_flutter](https://pub.dev/packages/font_awesome_flutter) version 8.8.1, enable to use font awesome icon
+- [grouped_list](https://pub.dev/packages/grouped_list) version 3.1.0, flutter ListView in which list items can be grouped to sections
 - [intl](https://pub.dev/packages/intl) version 0.16.1 for formatting number
 - [http](https://pub.dev/packages/http) version 0.12.1 for http method resource
 - [query_params](https://pub.dev/packages/query_params) version 0.6.1 for URL Parameters
+- [shared_preferences](https://pub.dev/packages/shared_preferences) version 0.5.7+3 providing a persistent store for local data
 - [table_calendar](https://pub.dev/packages/table_calendar) version 2.2.3 for scrollable calendar widget 
 
 ## Run
@@ -60,7 +62,8 @@ Product List Screen
   - [X] Cart button displayed if there is an item in cart
 - [ ] Cart Button
   - [X] Total item & price displayed changes according to cart content
-  - [ ] Clicking the button will navigate to Cart Screen
+  - [X] Clicking the button will navigate to Cart Screen
+  - [ ] Refinement
 
 Cart Screen
 - [ ] Cart Item List

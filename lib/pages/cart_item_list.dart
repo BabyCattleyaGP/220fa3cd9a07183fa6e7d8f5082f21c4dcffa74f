@@ -57,6 +57,69 @@ class CartListPageState extends State<CartListPage> {
     }
   }
 
+  Future<bool> _whenDeleteAll() {
+    return showDialog(
+      context: context,
+      builder: (context) => new AlertDialog(
+        title: new Text(
+                'Apakah Anda yakin?', 
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyText1
+                ),
+        content: new Text(
+          'Semua pesanan Anda akan terhapus', 
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyText2
+          ),
+        actions: 
+        <Widget>[
+          new FlatButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(5.0),
+              side: BorderSide(color: Theme.of(context).accentColor)
+            ),
+            color: Theme.of(context).accentColor,
+            padding: EdgeInsets.symmetric(
+              horizontal: 8.0, vertical: 5.0),
+            onPressed: () => Navigator.of(context).pop(false),
+            child: new Text(
+              'KEMBALI',
+              style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12.0
+                  )
+              ),
+          ),
+          new FlatButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(5.0),
+              side: BorderSide(color: Color(0xFFFDBF2E))
+            ),
+            color: Colors.white,
+            padding: EdgeInsets.symmetric(
+              horizontal: 8.0, vertical: 5.0),
+            onPressed:() {
+              sharedPref.remove("cart");
+              setState((){
+                totalItem = 0;
+                totalPrice = 0;
+              });
+              loadSharedPrefs(); 
+              Navigator.of(context).pop(false);            
+            },
+            child: new Text(
+              'YA',
+              style: TextStyle(
+                    color: Color(0xFFFDBF2E),
+                    fontSize: 12.0
+                  )
+              ),
+          ),
+        ],
+      ),
+    ) ?? false;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -106,12 +169,7 @@ class CartListPageState extends State<CartListPage> {
                           color: Colors.white,
                           elevation:0.0,
                           onPressed: () {
-                            sharedPref.remove("cart");
-                            setState((){
-                              totalItem = 0;
-                              totalPrice = 0;
-                            });
-                            loadSharedPrefs();
+                            _whenDeleteAll();
                           },
                           child:  Text('Hapus Pesanan',
                               style: Theme.of(context).textTheme.bodyText2),

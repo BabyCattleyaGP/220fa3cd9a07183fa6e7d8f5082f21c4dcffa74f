@@ -33,7 +33,7 @@ class ProductModel {
       price: map["price"],
       rating: map["rating"],
       quantity: map["quantity"] == null ? 0 : map["quantity"],
-      //orderDate: DateTime(map["order_date"])
+      orderDate: map["order_date"] == null ? map["order_date"] : DateTime.parse(map["order_date"])
     );
   }
 
@@ -47,7 +47,7 @@ class ProductModel {
       "price": price,
       "rating": rating,
       "quantity": quantity,
-      //"order_date":orderDate.toIso8601String()
+      "order_date":orderDate.toIso8601String()
     };
   }
 

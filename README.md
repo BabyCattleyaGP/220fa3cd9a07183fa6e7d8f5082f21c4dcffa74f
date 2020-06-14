@@ -67,12 +67,19 @@ Product List Screen
 
 Cart Screen
 - [ ] Cart Item List
-  - [ ] List is order by item date, then by product id
-  - [ ] Item quantity can be edited (minimum 1)
-  - [ ] Changing quantity here also changes quantity in Product List screen
-  - [ ] Clicking trash icon removes the item from cart
-  - [ ] Clicking “Hapus Pesanan” will empty the cart and showing the empty screen
-  - [ ] Use any image for empty screen
+  - [X] List is order by item date, then by product id
+  - [X] Item quantity can be edited (minimum 1)
+  - [X] Changing quantity here also changes quantity in Product List screen
+  - [X] Clicking trash icon removes the item from cart
+  - [X] Clicking “Hapus Pesanan” will empty the cart and showing the empty screen
+  - [X] Use any image for empty screen
+  - [ ] Refinement
 - [ ] Checkout Button
-  - [ ] Total item & price displayed changes according to cart content
-  - [ ] Clicking the button will navigate back to Product List Screen
+  - [X] Total item & price displayed changes according to cart content
+  - [X] Clicking the button will navigate back to Product List Screen
+  - [ ] Refinement
+
+## Device for Development & Debugging
+
+- Sony Xperia M2 D2305, Android 5.1.1, Lollipop
+- 540 x 960 pixels

@@ -30,9 +30,9 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
 
   void loadSharedPrefs() async {
     String data = await sharedPref.read("cart");
+    List<ProductModel> temp = [];
     if(data != null){
-      CartModel cart = cartFromJson(await sharedPref.read("cart"));
-      List<ProductModel> temp = [];
+      CartModel cart = cartFromJson(data);
       if(cart.totalItem != 0){
         cart.products.forEach(
           (element) => {
@@ -44,7 +44,20 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
           totalPrice = cart.totalPrice;
           productInCart = temp;
         });
+      } else{
+        setState(() {
+          totalItem = 0;
+          totalPrice = 0; 
+          productInCart = temp;       
+        });
       }
+    }
+    else{
+      setState(() {
+        totalItem = 0;
+        totalPrice = 0;
+        productInCart = temp;        
+      });
     }
   }
     
@@ -81,7 +94,6 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
     setState(() {
       _selected = day;
     });
-    // print('CALLBACK: _onDaySelected');
   }
 
   void _onVisibleDaysChanged(DateTime first, DateTime last, CalendarFormat format) {
@@ -292,7 +304,6 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
 
   Widget _buildList(List<ProductModel> products) {
     var size = MediaQuery.of(context).size;
-
     final double itemHeight = (size.height - kToolbarHeight) / 2;
     final double itemWidth = size.width / 2;
 
@@ -348,8 +359,6 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
         quantityOfProductInCart.add(0);
       }
     }
-
-    print(quantityOfProductInCart);
 
     return Scaffold(
         body: (products.isEmpty 
@@ -602,8 +611,9 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
                                               CartModel userCart = CartModel(totalPrice: totalPrice, totalItem: totalItem, products: productInCart);
                                               sharedPref.save("cart", cartToJson(userCart)); 
                                             }
+                                            else{
                                               sharedPref.remove("cart");
-                                            
+                                            }
                                           },
                                           child: 
                                           Text(
@@ -706,11 +716,15 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
             Padding(
               padding: EdgeInsets.all(2.0),
               child: RaisedButton(
-                onPressed: () {
-                  Navigator.push(
+                onPressed: () async {
+                  await Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CartListPage()),
-                );
+                  new MaterialPageRoute(builder: (context) => new CartListPage()),
+                ).then((value) {
+                    setState(() {
+                      loadSharedPrefs();
+                    });
+                  });
                 },
                 color: Theme.of(context).accentColor,
                 textColor: Colors.white,

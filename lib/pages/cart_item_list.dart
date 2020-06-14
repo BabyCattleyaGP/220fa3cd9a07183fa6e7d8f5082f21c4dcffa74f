@@ -135,6 +135,11 @@ class CartListPageState extends State<CartListPage> {
   Widget build(BuildContext context) {
     final NumberFormat currency = 
   NumberFormat.currency(name: 'Rp', customPattern: '\u00a4 #,###', decimalDigits: 0);
+    final Size screenSize = MediaQuery.of(context).size;
+    final cardWidth = 0.95 * (screenSize.width);
+    final cardHeight =  0.2 * (screenSize.height  - kToolbarHeight);
+    final imageWidth = 0.35 * cardWidth;
+    final imageHeight = 0.8 * cardHeight;
 
     return Scaffold(
         appBar: AppBar(
@@ -153,20 +158,21 @@ class CartListPageState extends State<CartListPage> {
         body: 
         totalItem != 0 ? 
           Container(
-            margin: EdgeInsets.all(5.0), 
+            margin: EdgeInsets.only(left:5.0, bottom: 2.0, right: 10.0), 
             child:
             Column(
               children: <Widget>[ 
                 Container(
-                  margin: EdgeInsets.all(5.0),
+                  margin: EdgeInsets.only(left:10.0, bottom: 2.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text('Daftar Pesanan',
                         style: Theme.of(context).textTheme.bodyText1),
                       Container(
+                        margin: EdgeInsets.only(bottom: 2.0),
                         child: RaisedButton(  
-                          color: Colors.white,
+                          color: Colors.white.withOpacity(0.1),
                           elevation:0.0,
                           onPressed: () {
                             _whenDeleteAll();
@@ -198,10 +204,12 @@ class CartListPageState extends State<CartListPage> {
                     ),
                     itemBuilder: (c, element) {
                       return Card(
-                        margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+                        margin: new EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
                         child: 
                         Container(
-                          padding: EdgeInsets.all(10.0),
+                          padding: EdgeInsets.all(5.0),
+                          width: cardWidth,
+                          height: cardHeight,
                           child: 
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -211,8 +219,8 @@ class CartListPageState extends State<CartListPage> {
                                 child: Column(
                                   children: <Widget>[
                                     Container(
-                                      width: 100.0,
-                                      height: 70.0,
+                                      width: imageWidth,
+                                      height: imageHeight,
                                       decoration: new BoxDecoration(
                                         borderRadius: new BorderRadius.circular(6.0),
                                         color: Theme.of(context).accentColor,
@@ -229,7 +237,7 @@ class CartListPageState extends State<CartListPage> {
                               ),
 
                               Container(
-                                margin: EdgeInsets.all(5.0),
+                                margin: EdgeInsets.only(left: 4.0, bottom: 2.0),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,7 +246,7 @@ class CartListPageState extends State<CartListPage> {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         Container(
-                                          width: 140.0,
+                                          width: 0.40 * cardWidth,
                                           child: 
                                             Text(element.name, 
                                               style: Theme.of(context).textTheme.bodyText1
@@ -298,7 +306,8 @@ class CartListPageState extends State<CartListPage> {
                                     ),
 
                                     Container(
-                                      margin: EdgeInsets.only(top:2.0, bottom:2.0),
+                                      margin: EdgeInsets.only(bottom:2.0),
+                                      height: 0.15*cardHeight,
                                       child:
                                         Text(element.brandName, 
                                           style: TextStyle(fontSize: 10.0)
@@ -307,18 +316,22 @@ class CartListPageState extends State<CartListPage> {
 
                                     Container(
                                       margin: EdgeInsets.only(top:2.0, bottom:2.0),
+                                      height: 0.2*cardHeight,
                                       child: 
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: <Widget>[
-                                            Container( child:
+                                            Container( 
+                                              width: 0.2*cardWidth,
+                                              child:
                                               Text(currency.format(element.price).toString(), 
                                                 style: Theme.of(context).textTheme.bodyText1
                                               ),
                                             ),
 
                                             Container(
-                                              width: 120.0,
+                                              width: 0.3*cardWidth,
+                                              margin: EdgeInsets.only(left:5.0),
                                               decoration: BoxDecoration(
                                                 color: Colors.white,
                                               ),

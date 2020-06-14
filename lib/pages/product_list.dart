@@ -1,4 +1,3 @@
-// import 'package:baby_220fa3cd9a07183fa6e7d8f5082f21c4dcffa74f/component/product_card.dart';
 import 'package:baby_220fa3cd9a07183fa6e7d8f5082f21c4dcffa74f/pages/cart_item_list.dart';
 import 'package:baby_220fa3cd9a07183fa6e7d8f5082f21c4dcffa74f/services/api_services.dart';
 import 'package:baby_220fa3cd9a07183fa6e7d8f5082f21c4dcffa74f/model/cart.dart';
@@ -94,14 +93,6 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
     setState(() {
       _selected = day;
     });
-  }
-
-  void _onVisibleDaysChanged(DateTime first, DateTime last, CalendarFormat format) {
-    // print('CALLBACK: _onVisibleDaysChanged');
-  }
-
-  void _onCalendarCreated(DateTime first, DateTime last, CalendarFormat format) {
-    // print('CALLBACK: _onCalendarCreated');
   }
 
   @override
@@ -267,8 +258,6 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
         _onDaySelected(date, events);
         _animationController.forward(from: 0.0);
       },
-      onVisibleDaysChanged: _onVisibleDaysChanged,
-      onCalendarCreated: _onCalendarCreated,
     );
   }
 
@@ -303,15 +292,13 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
   }
 
   Widget _buildList(List<ProductModel> products) {
-    var size = MediaQuery.of(context).size;
-    final double itemHeight = (size.height - kToolbarHeight) / 2;
-    final double itemWidth = size.width / 2;
-
     final Size screenSize = MediaQuery.of(context).size;
     final cardWidth = 0.5 * (screenSize.width);
     final cardHeight =  0.5 * (screenSize.height  - kToolbarHeight);
     final imageWidth = cardWidth;
-    final imageHeight = 0.35 * cardHeight;
+    final imageHeight = 0.33 * cardHeight;
+    final double itemHeight = (screenSize.height - kToolbarHeight) / 2;
+    final double itemWidth = screenSize.width / 2;
 
     final NumberFormat currency = 
   NumberFormat.currency(name: 'Rp', customPattern: '\u00a4 #,###', decimalDigits: 0);
@@ -387,327 +374,322 @@ class ProductListPageState extends State<ProductListPage> with TickerProviderSta
           ),
         ) 
         :
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(left: 8.0),
-              child: Text(
-                (DateFormat.yMMMMd("en_US").format(_selected)).toString(),
-                style: Theme.of(context).textTheme.bodyText1,
+        Container(
+          margin: EdgeInsets.all(5.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.only(left: 8.0),
+                child: Text(
+                  (DateFormat.yMMMMd("en_US").format(_selected)).toString(),
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
               ),
-            ),
-            Expanded(
-              child: 
-                GridView.count(
-                crossAxisCount: 2,
-                childAspectRatio: (itemWidth / itemHeight),
-                children: List.generate(products.length, (index) {
-                  ProductModel product = products[index];
-                  return 
-                    // ProductCard(
-                    //   name:product.name,
-                    //   price: product.price,
-                    //   imageUrl: product.imageUrl,
-                    //   brandName: product.brandName,
-                    //   packageName: product.packageName,
-                    //   rating: product.rating
-                    // );
-                  Container(
-                    padding: EdgeInsets.all(2.0),
-                    margin: const EdgeInsets.all(2.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.only(bottom: 3.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(80.0),
-                          ),
-                          child: 
+              Expanded(
+                child: 
+                  GridView.count(
+                  crossAxisCount: 2,
+                  childAspectRatio: (itemWidth / itemHeight),
+                  children: List.generate(products.length, (index) {
+                    ProductModel product = products[index];
+                    return 
+                    Container(
+                      padding: EdgeInsets.all(2.0),
+                      margin: const EdgeInsets.all(2.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
                           Container(
-                            width: imageWidth,
-                            height: imageHeight,
-                            decoration: new BoxDecoration(
-                              borderRadius: new BorderRadius.circular(6.0),
-                              color: Theme.of(context).accentColor,
-                              image: new DecorationImage(
-                                image: new NetworkImage(
-                                    '${product.imageUrl.toString()}'
-                                  ),
-                                fit: BoxFit.cover,
+                            margin: EdgeInsets.only(bottom: 3.0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(80.0),
+                            ),
+                            child: 
+                            Container(
+                              width: imageWidth,
+                              height: imageHeight,
+                              decoration: new BoxDecoration(
+                                borderRadius: new BorderRadius.circular(6.0),
+                                color: Theme.of(context).accentColor,
+                                image: new DecorationImage(
+                                  image: new NetworkImage(
+                                      '${product.imageUrl.toString()}'
+                                    ),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                           ),
-                        ),
 
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 5.0),
-                          height: 0.3 * cardHeight,
-                          width: imageWidth,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  Text(
-                                    product.rating.toStringAsFixed(1),
-                                    style: Theme.of(context).textTheme.bodyText2,
-                                  ),
-
-                                  RatingBar(
-                                    initialRating: product.rating,
-                                    ignoreGestures: true,
-                                    minRating: 0,
-                                    direction: Axis.horizontal,
-                                    allowHalfRating: true,
-                                    itemCount: 5,
-                                    itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
-                                    itemBuilder: (context, _) => Icon(
-                                      Icons.star,
-                                      color: Colors.amber
+                          Container(
+                            margin: const EdgeInsets.only(bottom: 5.0),
+                            height: 0.3 * cardHeight,
+                            width: imageWidth,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    Text(
+                                      product.rating.toStringAsFixed(1),
+                                      style: Theme.of(context).textTheme.bodyText2,
                                     ),
-                                    itemSize: 20.0,
-                                    onRatingUpdate: (rating) {},
-                                  ),               
-                                ],
-                              ),
 
-                              Text(
-                                product.name,
-                                style: Theme.of(context).textTheme.bodyText1,
-                              ),
-
-                              Flexible(
-                                child: Container(
-                                  child: Text(
-                                    'by ${product.brandName}',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context).textTheme.bodyText2,
-                                  )
-                                ),
-                              ),
-
-                              Container(
-                                child:Text(
-                                  product.packageName
-                                )
-                              ), 
-
-                            ],
-                          )
-                        ),
-
-                        Container(
-                          height: 0.27 * cardHeight,
-                          width: imageWidth,
-                          padding: EdgeInsets.all(0.0),
-                          margin:  EdgeInsets.all(0.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                currency.format(product.price).toString(),
-                                style: Theme.of(context).textTheme.bodyText1,
-                              ),
-
-                              Container(
-                                width: imageWidth,
-                                child: quantityOfProductInCart[index] == 0 ?
-                                  RaisedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        quantityOfProductInCart[index]++;
-                                        totalItem = quantityOfProductInCart.reduce((curr, element) => curr + element);
-                                      });
-                                      temptotalPrice = 0;
-                                      for (var i = 0; i < products.length; i++) {
-                                       temptotalPrice = temptotalPrice + (products[i].price * quantityOfProductInCart[i]);
-                                      }
-                                      setState(() {
-                                        totalPrice = temptotalPrice;
-                                      });
-
-                                      DateTime selectedDay = _selected;
-
-                                      ProductModel selectedProduct = ProductModel(
-                                        id: product.id, 
-                                        name: product.name,
-                                        price: product.price,
-                                        rating: product.rating,
-                                        packageName: product.packageName,
-                                        brandName: product.brandName,
-                                        imageUrl: product.imageUrl,
-                                        orderDate: selectedDay,
-                                        quantity: quantityOfProductInCart[index]
-                                      );
-
-                                      productInCart.add(selectedProduct);
-                                      productInCart.sort((a, b) => a.id.compareTo(b.id));
-
-                                      CartModel userCart = CartModel(totalPrice: totalPrice, totalItem: totalItem, products: productInCart);
-                                      sharedPref.save("cart", cartToJson(userCart));    
-                                      //sharedPref.remove("cart");
-                                    },
-                                    color: Color(0xFFFFFFFF),
-                                    padding: EdgeInsets.all(2.0),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: new BorderRadius.circular(8.0),
-                                      side: BorderSide(color: Theme.of(context).accentColor)
-                                    ),
-                                    child: 
-                                      Text('Tambah ke keranjang',
-                                        style: 
-                                          TextStyle(
-                                            fontSize: 12.0,
-                                            color: Theme.of(context).accentColor,
-                                          )
+                                    RatingBar(
+                                      initialRating: product.rating,
+                                      ignoreGestures: true,
+                                      minRating: 0,
+                                      direction: Axis.horizontal,
+                                      allowHalfRating: true,
+                                      itemCount: 5,
+                                      itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
+                                      itemBuilder: (context, _) => Icon(
+                                        Icons.star,
+                                        color: Colors.amber
                                       ),
-                                    )
-                                  : 
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                    children: <Widget>[
-                                      Container(
-                                        width: 0.3 * cardWidth,
-                                        margin: EdgeInsets.only(right: 2.0),
-                                        child: 
-                                        RaisedButton(
-                                          color: Colors.white,
-                                          padding: EdgeInsets.all(2.0),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: new BorderRadius.circular(8.0),
-                                            side: BorderSide(color: Colors.grey[100])
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              quantityOfProductInCart[index]--;
-                                              totalItem = quantityOfProductInCart.reduce((curr, element) => curr + element);
-                                            });
-                                            temptotalPrice = 0;
-                                            for (var i = 0; i < products.length; i++) {
-                                              temptotalPrice = temptotalPrice + (products[i].price * quantityOfProductInCart[i]);
-                                            }
-                                            setState(() {
-                                              totalPrice = temptotalPrice;
-                                            });
+                                      itemSize: 20.0,
+                                      onRatingUpdate: (rating) {},
+                                    ),               
+                                  ],
+                                ),
 
-                                            var toRemove = [];
-                                            
-                                            productInCart.forEach(
-                                              (element) => {
-                                                if(element.id == product.id){
-                                                  element.quantity--,
-                                                  if(element.quantity == 0){
-                                                    toRemove.add(element),
+                                Text(
+                                  product.name,
+                                  style: Theme.of(context).textTheme.bodyText1,
+                                ),
+
+                                Flexible(
+                                  child: Container(
+                                    child: Text(
+                                      'by ${product.brandName}',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Theme.of(context).textTheme.bodyText2,
+                                    )
+                                  ),
+                                ),
+
+                                Container(
+                                  child:Text(
+                                    product.packageName
+                                  )
+                                ), 
+
+                              ],
+                            )
+                          ),
+
+                          Container(
+                            height: 0.27 * cardHeight,
+                            width: imageWidth,
+                            padding: EdgeInsets.all(0.0),
+                            margin:  EdgeInsets.all(0.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  currency.format(product.price).toString(),
+                                  style: Theme.of(context).textTheme.bodyText1,
+                                ),
+
+                                Container(
+                                  width: imageWidth,
+                                  child: quantityOfProductInCart[index] == 0 ?
+                                    RaisedButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          quantityOfProductInCart[index]++;
+                                          totalItem = quantityOfProductInCart.reduce((curr, element) => curr + element);
+                                        });
+                                        temptotalPrice = 0;
+                                        for (var i = 0; i < products.length; i++) {
+                                         temptotalPrice = temptotalPrice + (products[i].price * quantityOfProductInCart[i]);
+                                        }
+                                        setState(() {
+                                          totalPrice = temptotalPrice;
+                                        });
+
+                                        DateTime selectedDay = _selected;
+
+                                        ProductModel selectedProduct = ProductModel(
+                                          id: product.id, 
+                                          name: product.name,
+                                          price: product.price,
+                                          rating: product.rating,
+                                          packageName: product.packageName,
+                                          brandName: product.brandName,
+                                          imageUrl: product.imageUrl,
+                                          orderDate: selectedDay,
+                                          quantity: quantityOfProductInCart[index]
+                                        );
+
+                                        productInCart.add(selectedProduct);
+                                        productInCart.sort((a, b) => a.id.compareTo(b.id));
+
+                                        CartModel userCart = CartModel(totalPrice: totalPrice, totalItem: totalItem, products: productInCart);
+                                        sharedPref.save("cart", cartToJson(userCart));    
+                                        //sharedPref.remove("cart");
+                                      },
+                                      color: Color(0xFFFFFFFF),
+                                      padding: EdgeInsets.all(2.0),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: new BorderRadius.circular(8.0),
+                                        side: BorderSide(color: Theme.of(context).accentColor)
+                                      ),
+                                      child: 
+                                        Text('Tambah ke keranjang',
+                                          style: 
+                                            TextStyle(
+                                              fontSize: 12.0,
+                                              color: Theme.of(context).accentColor,
+                                            )
+                                        ),
+                                      )
+                                    : 
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      children: <Widget>[
+                                        Container(
+                                          width: 0.3 * cardWidth,
+                                          margin: EdgeInsets.only(right: 2.0),
+                                          child: 
+                                          RaisedButton(
+                                            color: Colors.white,
+                                            padding: EdgeInsets.all(2.0),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: new BorderRadius.circular(8.0),
+                                              side: BorderSide(color: Colors.grey[100])
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                quantityOfProductInCart[index]--;
+                                                totalItem = quantityOfProductInCart.reduce((curr, element) => curr + element);
+                                              });
+                                              temptotalPrice = 0;
+                                              for (var i = 0; i < products.length; i++) {
+                                                temptotalPrice = temptotalPrice + (products[i].price * quantityOfProductInCart[i]);
+                                              }
+                                              setState(() {
+                                                totalPrice = temptotalPrice;
+                                              });
+
+                                              var toRemove = [];
+                                              
+                                              productInCart.forEach(
+                                                (element) => {
+                                                  if(element.id == product.id){
+                                                    element.quantity--,
+                                                    if(element.quantity == 0){
+                                                      toRemove.add(element),
+                                                    }
                                                   }
                                                 }
-                                              }
-                                            );
+                                              );
 
-                                            productInCart.removeWhere((item) => toRemove.contains(item));
-                                            if(productInCart != []){
+                                              productInCart.removeWhere((item) => toRemove.contains(item));
+                                              if(productInCart != []){
+                                                productInCart.sort((a, b) => a.id.compareTo(b.id));
+                                                CartModel userCart = CartModel(totalPrice: totalPrice, totalItem: totalItem, products: productInCart);
+                                                sharedPref.save("cart", cartToJson(userCart)); 
+                                              }
+                                              else{
+                                                sharedPref.remove("cart");
+                                              }
+                                            },
+                                            child: 
+                                            Text(
+                                              '-',
+                                              style: 
+                                              TextStyle(
+                                                color: Theme.of(context).accentColor,
+                                                fontSize: 16.0
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        
+                                        Container(
+                                          width: 0.3 * cardWidth,
+                                          margin: EdgeInsets.only(right: 2.0),
+                                          child: 
+                                          RaisedButton(
+                                          color: Colors.white,
+                                            padding: EdgeInsets.all(2.0),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: new BorderRadius.circular(8.0),
+                                              side: BorderSide(color: Colors.grey[100])
+                                            ),
+                                            onPressed: () {},
+                                            child: Text(
+                                              '${quantityOfProductInCart[index]}',
+                                              style: Theme.of(context).textTheme.bodyText1,
+                                            ),
+                                          ),
+                                        ),
+
+                                        
+                                        Container(
+                                          width: 0.3 * cardWidth,
+                                          child: 
+                                          RaisedButton(
+                                            color: Colors.white,
+                                            padding: EdgeInsets.all(2.0),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: new BorderRadius.circular(8.0),
+                                              side: BorderSide(color: Colors.grey[100])
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                quantityOfProductInCart[index]++;
+                                                totalItem = quantityOfProductInCart.reduce((curr, element) => curr + element);
+                                              });
+                                              temptotalPrice = 0;
+                                              for (var i = 0; i < products.length; i++) {
+                                                temptotalPrice = temptotalPrice + (products[i].price * quantityOfProductInCart[i]);
+                                              }
+                                              setState(() {
+                                                totalPrice = temptotalPrice;
+                                              });
+
+                                              productInCart.forEach(
+                                                (element) => {
+                                                  if(element.id == product.id){
+                                                    element.quantity++,
+                                                  }
+                                                }
+                                              );
+
                                               productInCart.sort((a, b) => a.id.compareTo(b.id));
+
                                               CartModel userCart = CartModel(totalPrice: totalPrice, totalItem: totalItem, products: productInCart);
                                               sharedPref.save("cart", cartToJson(userCart)); 
-                                            }
-                                            else{
-                                              sharedPref.remove("cart");
-                                            }
-                                          },
-                                          child: 
-                                          Text(
-                                            '-',
-                                            style: 
-                                            TextStyle(
-                                              color: Theme.of(context).accentColor,
-                                              fontSize: 16.0
+
+                                            },
+                                            child: Text(
+                                              '+',
+                                              style: TextStyle(
+                                                color: Theme.of(context).accentColor,
+                                                fontSize: 16.0
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      
-                                      Container(
-                                        width: 0.3 * cardWidth,
-                                        margin: EdgeInsets.only(right: 2.0),
-                                        child: 
-                                        RaisedButton(
-                                        color: Colors.white,
-                                          padding: EdgeInsets.all(2.0),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: new BorderRadius.circular(8.0),
-                                            side: BorderSide(color: Colors.grey[100])
-                                          ),
-                                          onPressed: () {},
-                                          child: Text(
-                                            '${quantityOfProductInCart[index]}',
-                                            style: Theme.of(context).textTheme.bodyText1,
-                                          ),
-                                        ),
-                                      ),
 
-                                      
-                                      Container(
-                                        width: 0.3 * cardWidth,
-                                        child: 
-                                        RaisedButton(
-                                          color: Colors.white,
-                                          padding: EdgeInsets.all(2.0),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: new BorderRadius.circular(8.0),
-                                            side: BorderSide(color: Colors.grey[100])
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              quantityOfProductInCart[index]++;
-                                              totalItem = quantityOfProductInCart.reduce((curr, element) => curr + element);
-                                            });
-                                            temptotalPrice = 0;
-                                            for (var i = 0; i < products.length; i++) {
-                                              temptotalPrice = temptotalPrice + (products[i].price * quantityOfProductInCart[i]);
-                                            }
-                                            setState(() {
-                                              totalPrice = temptotalPrice;
-                                            });
+                                      ],
+                                    )
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    );
 
-                                            productInCart.forEach(
-                                              (element) => {
-                                                if(element.id == product.id){
-                                                  element.quantity++,
-                                                }
-                                              }
-                                            );
-
-                                            productInCart.sort((a, b) => a.id.compareTo(b.id));
-
-                                            CartModel userCart = CartModel(totalPrice: totalPrice, totalItem: totalItem, products: productInCart);
-                                            sharedPref.save("cart", cartToJson(userCart)); 
-
-                                          },
-                                          child: Text(
-                                            '+',
-                                            style: TextStyle(
-                                              color: Theme.of(context).accentColor,
-                                              fontSize: 16.0
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-
-                                    ],
-                                  )
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  );
-
-                }),
+                  }),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
 
         bottomNavigationBar: 
